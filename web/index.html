@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .form-container {
+            width: 90%;
+            margin: auto;
+        }
+    </style>
+    <title>Title</title>
+</head>
+<body>
+    <form name="user-form" class="form-container" onsubmit="submitUserForm(event, this)">
+        <div>
+            <label>name</label>
+            <input type="text" name="name" required>
+        </div>
+        <div>
+            <label>email</label>
+            <input type="email" name="email" required>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const apiEndpoint = 'http://localhost:3000/api';
+        function submitUserForm(event, formControls) {
+            event.preventDefault();
+            console.log('submitUserForm', event);
+            const body = {
+                name: formControls.name.value,
+                email: formControls.email.value,
+            };
+            axios.post(apiEndpoint + '/users', body)
+                .then(function (response) {
+                    console.log('Response: ', response);
+                })
+                .catch(function (error) {
+                    console.log('Error: ', error);
+                })
+            return false;
+        }
+    </script>
+</body>
+</html>
