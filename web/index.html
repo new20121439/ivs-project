@@ -97,10 +97,11 @@
             };
             axios.post(apiEndpoint + '/users', body)
                 .then(function (response) {
-                    alert(response);
+                    console.log(response);
+                    alert(response.data.message);
                 })
                 .catch(function (error) {
-                    alert(error.message);
+                    alert(error.response.data.message);
                 })
             return false;
         }
