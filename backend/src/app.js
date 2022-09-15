@@ -3,17 +3,17 @@ import userRouter from './user/user.route.js';
 import {datasource} from "./config/database.js";
 import {errorHandlerMiddleware} from "./utils/middleware/error-handler.middleware.js";
 import {BaseError} from "./utils/error.js";
+import cors from 'cors';
 
 const app = express();
-// Serve static files
-app.use(express.static('../web'));
-
 app.use(express.json());
+app.use(cors());
 
 // Init connection to db
 datasource.initialize()
     .then(() => console.log('Connected to database'))
     .catch((err) => console.error('Failed to connect to database ', err));
+
 
 //  Router setup
 const apiRouter = express.Router();
@@ -24,7 +24,7 @@ app.use(errorHandlerMiddleware);
 
 // Prevent Leaked Errors
 process
-    .on('unhandledRejection', (error, promise) => {
+    .on('unhandledRejection', (error, _) => {
         console.error('unhandledRejection', error);
     })
     .on('uncaughtException', (error => {
