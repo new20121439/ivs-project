@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "PORT=3000 TEST_TOKEN=tranvandung nodemon src/index.js",
+    "dev": "DB_HOST=ivs-db.clheixzydscv.ap-southeast-1.rds.amazonaws.com DB_PORT=5432 DB_TYPE=postgres DB_USERNAME=postgres DB_PASSWORD=tmvF7CbH9CVTFUfvBwZZ DB_NAME=postgres PORT=3000 TEST_TOKEN=tranvandung nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
