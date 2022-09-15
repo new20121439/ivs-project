@@ -1,14 +1,14 @@
 import express from 'express';
 import { authMiddleware } from "../utils/middleware/auth.middleware.js";
 import {datasource} from "../config/database.js";
-import {UserEnity} from './user.entity.js';
+import {UserEntity} from './user.entity.js';
 import {UserService} from "./user.service.js";
 import {validateMiddleware} from "../utils/middleware/validate.middleware.js";
 import validateSchema from "./validate-schema.js";
 
 const router = express.Router();
 
-const userRepository = datasource.getRepository(UserEnity);
+const userRepository = datasource.getRepository(UserEntity);
 const userService = new UserService(userRepository);
 
 router.post('/', validateMiddleware(validateSchema.createUser), async function(req, res, next) {

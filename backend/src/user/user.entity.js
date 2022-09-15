@@ -1,8 +1,7 @@
 import {EntitySchema} from "typeorm";
-import {ENTITY_ORM} from "../config/database.js";
 
-export const UserEnity = new EntitySchema({
-    name: ENTITY_ORM.USER,
+export const UserEntity = new EntitySchema({
+    name: 'User',
     tableName: 'users',
     columns: {
         id: {
