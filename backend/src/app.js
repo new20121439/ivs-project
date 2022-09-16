@@ -1,8 +1,8 @@
 import express from 'express';
 import userRouter from './user/user.route.js';
-import {datasource} from "./config/database.js";
-import {errorHandlerMiddleware} from "./utils/middleware/error-handler.middleware.js";
-import {BaseError} from "./utils/error.js";
+import { datasource } from './config/database.js';
+import { errorHandlerMiddleware } from './utils/middleware/error-handler.middleware.js';
+import { BaseError } from './utils/error.js';
 import cors from 'cors';
 
 const app = express();
@@ -24,7 +24,7 @@ app.use(errorHandlerMiddleware);
 
 // Prevent Leaked Errors
 process
-    .on('unhandledRejection', (error, _) => {
+    .on('unhandledRejection', (error) => {
         console.error('unhandledRejection', error);
     })
     .on('uncaughtException', (error => {

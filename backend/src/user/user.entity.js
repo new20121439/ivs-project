@@ -1,4 +1,4 @@
-import {EntitySchema} from "typeorm";
+import { EntitySchema } from 'typeorm';
 
 export const UserEntity = new EntitySchema({
     name: 'User',
@@ -10,11 +10,11 @@ export const UserEntity = new EntitySchema({
             generated: true,
         },
         name: {
-            type: "text",
+            type: 'text',
             nullable: false,
         },
         email: {
-            type: "text",
+            type: 'text',
             nullable: false,
             unique: true,
         }

@@ -1,4 +1,4 @@
-import {BadRequestError, sendErrorResponse} from "../error.js";
+import { BadRequestError, sendErrorResponse } from '../error.js';
 
 export function validateMiddleware(schema) {
     return function(req, res, next) {

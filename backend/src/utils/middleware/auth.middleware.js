@@ -1,4 +1,4 @@
-import {sendErrorResponse, UnauthorizedError} from "../error.js";
+import { sendErrorResponse, UnauthorizedError } from '../error.js';
 
 export function authMiddleware(req, res, next) {
     const auth = req.headers.authorization;
