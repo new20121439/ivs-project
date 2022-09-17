@@ -1,3 +1,5 @@
+region              = "ap-southeast-1"
 environment         = "production"
 domain_name         = "example-website.com"
 website_bucket_name = "example-website.com"
+test_token          = "dsafjkjrlsrpr312k3j1lk3jlkdjada"

@@ -1,9 +1,10 @@
 locals {
-  region = "ap-southeast-1"
+  cluster_name  = "ivs-ecs-ec2"
+  node_app_port = 3000
 }
 
 provider "aws" {
-  region = local.region
+  region = var.region
 }
 
 module "website" {
@@ -15,21 +16,23 @@ module "website" {
 
 # Network
 module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
+  source  = "registry.terraform.io/terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
 
   name = "main-vpc"
   cidr = "10.99.0.0/18"
 
-  azs              = ["${local.region}a", "${local.region}b", "${local.region}c"]
-  public_subnets   = ["10.99.0.0/24", "10.99.1.0/24", "10.99.2.0/24"]
-  private_subnets  = ["10.99.3.0/24", "10.99.4.0/24", "10.99.5.0/24"]
+  azs = ["${var.region}a", "${var.region}b", "${var.region}c"]
+  // Public ECS cluster through public
+  public_subnets = ["10.99.0.0/24", "10.99.1.0/24", "10.99.2.0/24"]
+  // private_subnets  = ["10.99.3.0/24", "10.99.4.0/24", "10.99.5.0/24"]
   database_subnets = ["10.99.7.0/24", "10.99.8.0/24", "10.99.9.0/24"]
 
-  create_database_subnet_group           = true
-  create_database_subnet_route_table     = true
-  // Start configuration: Public db access
-  create_database_internet_gateway_route = true
+  create_database_subnet_group       = true
+  create_database_subnet_route_table = true
+  // ## Start configuration: Public db access ##
+  // Database need dns for public access
+  // create_database_internet_gateway_route = true
 
   enable_dns_hostnames = true
   enable_dns_support   = true
@@ -41,7 +44,7 @@ module "vpc" {
 }
 
 module "security_group" {
-  source  = "terraform-aws-modules/security-group/aws"
+  source  = "registry.terraform.io/terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
 
   name        = "db-security-group"
@@ -56,6 +59,8 @@ module "security_group" {
       protocol    = "tcp"
       description = "PostgreSQL access from within VPC"
       cidr_blocks = module.vpc.vpc_cidr_block
+      // More security if Define a db_access_security_groups
+      // security_groups = [module.db_access_security_groups.id]
     },
   ]
 
@@ -66,8 +71,55 @@ module "security_group" {
 
 module "db" {
   source                 = "./database"
-  region                 = local.region
+  region                 = var.region
   db_subnet_group_name   = module.vpc.database_subnet_group_name
   subnet_ids             = module.vpc.database_subnets
   vpc_security_group_ids = [module.security_group.security_group_id]
+}
+
+module "demo-ecr" {
+  source = "./ecr"
+}
+
+module "demo-ecs" {
+  source = "./ecs"
+  ecs_service_network_configuration = {
+    subnets          = module.vpc.public_subnets
+    assign_public_ip = true
+  }
+  node_app_image_url = module.demo-ecr.demo-ecr-repository.repository_url
+  node_app_env = [
+    {
+      name  = "DB_TYPE"
+      value = module.db.db.db_instance_engine
+    },
+    {
+      name  = "DB_HOST"
+      value = module.db.db.db_instance_address
+    },
+    {
+      name  = "DB_DATABASE_NAME"
+      value = module.db.db.db_instance_name
+    },
+    {
+      name  = "DB_USERNAME"
+      value = module.db.db.db_instance_username
+    },
+    {
+      name  = "DB_PASSWORD"
+      value = module.db.db.db_instance_password
+    },
+    {
+      name  = "DB_PORT"
+      value = tostring(module.db.db.db_instance_port)
+    },
+    {
+      name  = "PORT"
+      value = tostring(local.node_app_port)
+    },
+    {
+      name  = "TEST_TOKEN"
+      value = var.test_token
+    }
+  ]
 }

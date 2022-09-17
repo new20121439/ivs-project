@@ -3,14 +3,14 @@ locals {
 }
 
 module "db" {
-  source     = "terraform-aws-modules/rds/aws"
+  source     = "registry.terraform.io/terraform-aws-modules/rds/aws"
   version    = "5.1.0"
   identifier = local.name
 
   engine               = "postgres"
-  engine_version       = "14.1"
+  engine_version       = "14.3"
   family               = "postgres14" # DB parameter group
-  major_engine_version = "14"         # DB option group
+  major_engine_version = "14.3"       # DB option group
   instance_class       = "db.t3.micro"
 
   allocated_storage = 20
@@ -27,4 +27,8 @@ module "db" {
   backup_retention_period = 1
   skip_final_snapshot     = true
   deletion_protection     = false
+}
+
+output "db" {
+  value = module.db
 }
