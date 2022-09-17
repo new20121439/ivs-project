@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "demo-ecr-repository" {
-  name                 = "node-app-repository"
+  name                 = "node-app"
   image_tag_mutability = "IMMUTABLE"
 }
 

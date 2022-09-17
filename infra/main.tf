@@ -87,7 +87,7 @@ module "demo-ecs" {
     subnets          = module.vpc.public_subnets
     assign_public_ip = true
   }
-  node_app_image_url = module.demo-ecr.demo-ecr-repository.repository_url
+  node_app_image_url = module.demo-ecr.demo-ecr-repository.repository_url //"${module.demo-ecr.demo-ecr-repository.repository_url}:latest"
   node_app_env = [
     {
       name  = "DB_TYPE"

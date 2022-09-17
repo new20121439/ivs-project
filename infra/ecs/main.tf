@@ -15,12 +15,12 @@ resource "aws_ecs_task_definition" "node-app-ecs-task-definition" {
   execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
   container_definitions = jsonencode([
     {
-      name       = "node-app-container"
-      image      = var.node_app_image_url
-      memory     = 1024
-      cpu        = 512
-      essential  = true
-      entryPoint = ["/"]
+      name   = "node-app-container"
+      image  = var.node_app_image_url
+      memory = 1024
+      cpu    = 512
+      //      essential  = true
+      //      entryPoint = ["/"]
       portMappings = [
         {
           containerPort = 3000
