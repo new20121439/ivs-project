@@ -22,3 +22,7 @@ variable "node_app_env" {
   //    TEST_TOKEN  = string
   //  })
 }
+
+variable "region" {}
+
+variable "aws_cloudwatch_log_group" {}

@@ -1,3 +1,7 @@
+locals {
+  node_app_port = 3000
+}
+
 resource "aws_ecs_cluster" "demo-ecs-cluster" {
   name = "ecs-cluster-for-demo"
 }
@@ -15,18 +19,38 @@ resource "aws_ecs_task_definition" "node-app-ecs-task-definition" {
   execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
   container_definitions = jsonencode([
     {
-      name   = "node-app-container"
-      image  = var.node_app_image_url
-      memory = 1024
-      cpu    = 512
-      //      essential  = true
+      name      = "node-app-container"
+      image     = var.node_app_image_url
+      memory    = 1024
+      cpu       = 512
+      essential = true
       //      entryPoint = ["/"]
       portMappings = [
         {
-          containerPort = 3000
-          hostPort      = 3000
+          containerPort = local.node_app_port
+          hostPort      = local.node_app_port
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = var.aws_cloudwatch_log_group //"example-ecs-cluster-group"
+          awslogs-stream-prefix = "example-ecs-cluster"
+          awslogs-region        = var.region
+          awslogs-create-group  = "true"
+        }
+
+      }
+      healthCheck = null
+      // This healthCheck is container healthCheck: node-slim app -> curl not exist
+      // If ALB healthCheck can be worked
+      //      healthCheck = {
+      //        command  = ["CMD-SHELL", "curl -f http://127.0.0.1:${local.node_app_port} || exit 1"]
+      //        interval = 40 // 40s. Range: [5s, 300s], Default: 30s
+      //        startperiod = "120"
+      //        retries = 3
+      //        timeout = 5 // 5s. Range: [2s, 60s], Default: 5s
+      //      }
       environment = var.node_app_env
     }
   ])

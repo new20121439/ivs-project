@@ -81,13 +81,23 @@ module "demo-ecr" {
   source = "./ecr"
 }
 
+resource "aws_cloudwatch_log_group" "ecs_log_group" {
+  name              = "example-ecs-cluster-group"
+  retention_in_days = 1
+  tags = {
+    Environment = var.environment
+  }
+}
+
 module "demo-ecs" {
   source = "./ecs"
   ecs_service_network_configuration = {
     subnets          = module.vpc.public_subnets
     assign_public_ip = true
   }
-  node_app_image_url = module.demo-ecr.demo-ecr-repository.repository_url //"${module.demo-ecr.demo-ecr-repository.repository_url}:latest"
+  aws_cloudwatch_log_group = aws_cloudwatch_log_group.ecs_log_group.name
+  region                   = var.region
+  node_app_image_url       = module.demo-ecr.demo-ecr-repository.repository_url //"${module.demo-ecr.demo-ecr-repository.repository_url}:latest"
   node_app_env = [
     {
       name  = "DB_TYPE"
@@ -98,7 +108,7 @@ module "demo-ecs" {
       value = module.db.db.db_instance_address
     },
     {
-      name  = "DB_DATABASE_NAME"
+      name  = "DB_NAME"
       value = module.db.db.db_instance_name
     },
     {
