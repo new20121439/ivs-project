@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "DB_HOST=complete-postgresql.clheixzydscv.ap-southeast-1.rds.amazonaws.com DB_PORT=5432 DB_TYPE=postgres DB_USERNAME=tranvandung DB_PASSWORD=kbsB33JGvuzRfIWg DB_NAME=postgresDb PORT=3000 TEST_TOKEN=tranvandung nodemon src/index.js",
+    "dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src --ext .js",
     "lint:fix": "npm run lint -- --fix"
